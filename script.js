@@ -105,3 +105,46 @@ window.addEventListener('scroll', () => {
         }
     });
 });
+
+// Magnetic Buttons — lerp-based rAF loop for smooth tracking
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+if (!prefersReducedMotion.matches) {
+    document.querySelectorAll('.btn').forEach(btn => {
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+        let rafId = null;
+        let isHovered = false;
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function tick() {
+            currentX = lerp(currentX, targetX, 0.1);
+            currentY = lerp(currentY, targetY, 0.1);
+            btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
+
+            const dist = Math.abs(targetX - currentX) + Math.abs(targetY - currentY);
+            if (isHovered || dist > 0.05) {
+                rafId = requestAnimationFrame(tick);
+            } else {
+                btn.style.transform = '';
+                rafId = null;
+            }
+        }
+
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            targetX = (e.clientX - rect.left - rect.width / 2) * 0.3;
+            targetY = (e.clientY - rect.top - rect.height / 2) * 0.3;
+            isHovered = true;
+            if (!rafId) rafId = requestAnimationFrame(tick);
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            isHovered = false;
+            targetX = 0;
+            targetY = 0;
+            if (!rafId) rafId = requestAnimationFrame(tick);
+        });
+    });
+}

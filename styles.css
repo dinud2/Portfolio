@@ -215,7 +215,34 @@ html {
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
-    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.reveal-word {
+    display: inline-block;
+    clip-path: inset(0 0 100% 0);
+    animation: wordReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.reveal-sep {
+    display: inline-block;
+    opacity: 0;
+    animation: sepFade 0.5s ease both;
+}
+
+.hero-subtitle .reveal-word:nth-child(1) { animation-delay: 0.30s; }
+.hero-subtitle .reveal-sep:nth-child(2)  { animation-delay: 0.60s; }
+.hero-subtitle .reveal-word:nth-child(3) { animation-delay: 0.70s; }
+.hero-subtitle .reveal-sep:nth-child(4)  { animation-delay: 1.00s; }
+.hero-subtitle .reveal-word:nth-child(5) { animation-delay: 1.10s; }
+
+@keyframes wordReveal {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0 0 0% 0); }
+}
+
+@keyframes sepFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .hero-text {
@@ -303,8 +330,9 @@ html {
     border-radius: 8px;
     font-weight: 600;
     text-decoration: none;
-    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    transition: background 0.25s ease, border-color 0.25s ease;
     display: inline-block;
+    will-change: transform;
 }
 
 .btn-primary {
@@ -314,7 +342,6 @@ html {
 
 .btn-primary:hover {
     background: #2563eb;
-    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -324,7 +351,6 @@ html {
 
 .btn-secondary:hover {
     border-color: #64748b;
-    transform: translateY(-2px);
 }
 
 /* ========================================
@@ -667,5 +693,11 @@ html {
     .section-title {
         opacity: 1;
         transform: none;
+    }
+
+    .reveal-word,
+    .reveal-sep {
+        clip-path: none;
+        opacity: 1;
     }
 }
