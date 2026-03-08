@@ -40,7 +40,7 @@
             <p class="hero-greeting">Hi, I'm</p>
             <h1 class="hero-name">Dinu<br>Dassanayake<span class="accent-dot">.</span></h1>
             <p class="hero-role">Computer Engineering Student</p>
-            <p class="hero-sub">University of Toronto &nbsp;·&nbsp; Electric Vehicles &nbsp;·&nbsp; Hardware &nbsp;·&nbsp; F1</p>
+            <p class="hero-sub">@ University of Toronto</p>
             <div class="hero-cta">
                 <a href="#projects" class="btn-primary">View My Work</a>
                 <a href="#contact" class="btn-secondary">Get In Touch</a>
@@ -59,18 +59,13 @@
             <h2 class="section-title">Who I Am</h2>
             <div class="about-grid">
                 <div class="about-text">
-                    <p>I'm a first-year Computer Engineering student at the University of Toronto, passionate about the intersection of software and hardware. I love building things that exist in the physical world — from embedded systems to PCBs.</p>
-                    <p>When I'm not writing code or designing circuits, you'll find me deep in F1 race strategy analysis or tinkering with electronics. I believe the best engineers understand both bits and bolts.</p>
+                    <p>I'm a first-year Computer Engineering student at the University of Toronto, passionate about the software and hardware releated to cars. I enjoy working on embedded systems porjects to Printed Circuit Boards (PCBs). </p>
                     <p>Currently contributing to the UofT Formula Racing team, building real hardware for a real race car.</p>
                 </div>
                 <div class="about-stats">
                     <div class="stat-card fade-in" style="--delay: 0.1s">
                         <div class="stat-num">1st</div>
                         <div class="stat-label">Year Engineering</div>
-                    </div>
-                    <div class="stat-card fade-in" style="--delay: 0.2s">
-                        <div class="stat-num">30+</div>
-                        <div class="stat-label">Projects Built</div>
                     </div>
                     <div class="stat-card fade-in" style="--delay: 0.3s">
                         <div class="stat-num">UofT</div>
@@ -92,37 +87,23 @@
             <h2 class="section-title">Things I've Built</h2>
             <div class="projects-grid">
 
-                <div class="project-card fade-in" style="--delay: 0s">
-                    <div class="project-num">01</div>
-                    <h3 class="project-title">30 Projects, 30 Days</h3>
-                    <p class="project-desc">A personal challenge to learn microcontrollers and electronics — one project per day for a month. Covered embedded C++, sensors, displays, and more.</p>
-                    <div class="project-tags">
-                        <span class="tag">C++</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Microcontrollers</span>
+                <div class="project-card featured tssi-layout fade-in" style="--delay: 0s">
+                    <div class="tssi-text">
+                        <div class="project-num">01</div>
+                        <h3 class="project-title">Tractive System Status Indicator</h3>
+                        <p class="project-desc">Designed and built the first PCB for the UofT Formula Racing 2026 electric vehicle — a hardware component that monitors tractive system status in real time.</p>
+                        <div class="project-tags">
+                            <span class="tag">Altium</span>
+                            <span class="tag">Soldering</span>
+                        </div>
                     </div>
-                </div>
-
-                <div class="project-card fade-in featured" style="--delay: 0.1s">
-                    <div class="project-num">02</div>
-                    <h3 class="project-title">Tractive System Status Indicator</h3>
-                    <p class="project-desc">Designed and built the first PCB for the UofT Formula Racing 2026 electric vehicle — a hardware component that monitors tractive system status in real time.</p>
-                    <div class="project-tags">
-                        <span class="tag">PCB Design</span>
-                        <span class="tag">React</span>
-                        <span class="tag">TypeScript</span>
-                        <span class="tag">Storybook</span>
-                    </div>
-                </div>
-
-                <div class="project-card fade-in" style="--delay: 0.2s">
-                    <div class="project-num">03</div>
-                    <h3 class="project-title">Analytics Dashboard</h3>
-                    <p class="project-desc">Real-time analytics platform with interactive data visualizations. Built a responsive frontend with live data streaming and custom chart components.</p>
-                    <div class="project-tags">
-                        <span class="tag">Vue.js</span>
-                        <span class="tag">D3.js</span>
-                        <span class="tag">Python</span>
+                    <div class="tssi-images">
+                        <img id="tssi-img" src="media/tssi_1.png" alt="TSSI PCB front" />
+                        <div class="tssi-controls">
+                            <button class="tssi-btn" id="tssi-prev" aria-label="Previous image" disabled>&#8249;</button>
+                            <span class="tssi-counter" id="tssi-counter">1 / 2</span>
+                            <button class="tssi-btn" id="tssi-next" aria-label="Next image">&#8250;</button>
+                        </div>
                     </div>
                 </div>
 
@@ -141,20 +122,10 @@
                     <h3 class="skill-group-title">Languages</h3>
                     <ul class="skill-list">
                         <li>Python</li>
-                        <li>C++</li>
+                        <li>C</li>
                         <li>JavaScript</li>
-                        <li>TypeScript</li>
                         <li>HTML &amp; CSS</li>
-                    </ul>
-                </div>
-
-                <div class="skill-group fade-in" style="--delay: 0.1s">
-                    <h3 class="skill-group-title">Frameworks</h3>
-                    <ul class="skill-list">
-                        <li>React</li>
-                        <li>Vue.js</li>
-                        <li>D3.js</li>
-                        <li>Storybook</li>
+                        <li>Java</li>
                     </ul>
                 </div>
 
@@ -163,9 +134,9 @@
                     <ul class="skill-list">
                         <li>Git &amp; GitHub</li>
                         <li>Docker</li>
-                        <li>AWS</li>
-                        <li>Figma</li>
-                        <li>VS Code</li>
+                        <li>Firebase</li>
+                        <li>Altium</li>
+                        <li>CMake</li>
                     </ul>
                 </div>
 
@@ -173,9 +144,8 @@
                     <h3 class="skill-group-title">Hardware</h3>
                     <ul class="skill-list">
                         <li>PCB Design</li>
-                        <li>Embedded Systems</li>
-                        <li>Microcontrollers</li>
-                        <li>Circuit Analysis</li>
+                        <li>Altium</li>
+                        <li>Fusion 360</li>
                     </ul>
                 </div>
 
@@ -212,6 +182,6 @@
         <span>Dinu Dassanayake &nbsp;·&nbsp; 2026</span>
     </footer>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -551,7 +551,7 @@ body {
 
 .about-stats {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
@@ -590,7 +590,7 @@ body {
 /* ── Projects ──────────────────────────────────────── */
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
@@ -614,6 +614,7 @@ body {
     background: linear-gradient(135deg, rgba(41,121,255,0.04) 0%, transparent 60%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 .project-card:hover {
@@ -694,11 +695,83 @@ body {
     border-color: rgba(41,121,255,0.2);
 }
 
+/* ── TSSI side-by-side layout ──────────────────────── */
+.tssi-layout {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+}
+
+.tssi-text {
+    flex: 1;
+}
+
+.tssi-images {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tssi-images img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border);
+    transition: opacity 0.15s ease;
+}
+
+.tssi-images img.fading {
+    opacity: 0;
+}
+
+.tssi-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tssi-btn {
+    background: rgba(41,121,255,0.06);
+    border: 1px solid rgba(41,121,255,0.2);
+    color: var(--text-dim);
+    font-size: 1.4rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    padding-bottom: 2px;
+    flex-shrink: 0;
+}
+
+.tssi-btn:hover:not(:disabled) {
+    background: rgba(41,121,255,0.15);
+    border-color: rgba(41,121,255,0.5);
+    color: var(--accent);
+}
+
+.tssi-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.tssi-counter {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+}
+
+
 /* ── Skills ────────────────────────────────────────── */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 48px;
+    justify-content: center;
 }
 
 .skill-group-title {
@@ -810,8 +883,8 @@ footer {
 
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 1024px) {
-    .projects-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .tssi-layout {
+        flex-direction: column;
     }
 
     .skills-grid {
@@ -861,10 +934,6 @@ footer {
         gap: 48px;
     }
 
-    .projects-grid {
-        grid-template-columns: 1fr;
-    }
-
     .skills-grid {
         grid-template-columns: 1fr 1fr;
         gap: 32px;
@@ -890,7 +959,7 @@ footer {
     }
 
     .about-stats {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .skills-grid {

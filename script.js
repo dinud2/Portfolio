@@ -87,6 +87,27 @@ const observer = new IntersectionObserver((entries) => {
 
 fadeEls.forEach(el => observer.observe(el));
 
+// ── TSSI image cycler ──────────────────────────────
+const tssiSrcs    = ['media/tssi_1.png', 'media/tssi_2.png'];
+const tssiImg     = document.getElementById('tssi-img');
+const tssiPrev    = document.getElementById('tssi-prev');
+const tssiNext    = document.getElementById('tssi-next');
+const tssiCounter = document.getElementById('tssi-counter');
+let tssiIndex     = 0;
+
+function tssiShow(index) {
+    tssiIndex = index;
+    tssiImg.src = tssiSrcs[tssiIndex];
+    tssiCounter.textContent = `${tssiIndex + 1} / ${tssiSrcs.length}`;
+    tssiPrev.disabled = tssiIndex === 0;
+    tssiNext.disabled = tssiIndex === tssiSrcs.length - 1;
+}
+
+if (tssiPrev && tssiNext) {
+    tssiPrev.addEventListener('click', () => tssiShow(tssiIndex - 1));
+    tssiNext.addEventListener('click', () => tssiShow(tssiIndex + 1));
+}
+
 // ── Smooth scroll for nav links ────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
@@ -97,3 +118,4 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         }
     });
 });
+
