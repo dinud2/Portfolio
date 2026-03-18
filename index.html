@@ -21,7 +21,7 @@
     <nav class="nav" id="nav">
         <a href="#home" class="nav-logo">DD</a>
         <div class="nav-right">
-            <div class="nav-links">
+            <div class="nav-links" id="nav-links">
                 <a href="#about">About</a>
                 <a href="#projects">Projects</a>
                 <a href="#skills">Skills</a>
@@ -30,6 +30,9 @@
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
                 <span class="toggle-icon" id="toggle-icon">☀</span>
                 <span id="toggle-label">Light</span>
+            </button>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
             </button>
         </div>
     </nav>
@@ -85,9 +88,12 @@
         <div class="section-inner fade-in">
             <p class="section-label">02 / Projects</p>
             <h2 class="section-title">Things I've Built</h2>
-            <div class="projects-grid">
+            <div class="projects-carousel">
+                <button class="carousel-arrow carousel-prev" id="proj-prev" aria-label="Previous project">&#8249;</button>
+                <div class="projects-viewport">
+                    <div class="projects-track" id="projects-track">
 
-                <div class="project-card featured tssi-layout fade-in" style="--delay: 0s">
+                <div class="project-card featured tssi-layout" style="--delay: 0s">
                     <div class="tssi-text">
                         <div class="project-num">01</div>
                         <h3 class="project-title">Tractive System Status Indicator</h3>
@@ -107,7 +113,35 @@
                     </div>
                 </div>
 
+                <div class="project-card featured eigen-layout" style="--delay: 0.15s">
+                    <div class="eigen-images">
+                        <img id="eigen-img" src="media/eigen_1.png" alt="Eigen screenshot" />
+                        <div class="eigen-controls">
+                            <button class="eigen-btn" id="eigen-prev" aria-label="Previous image" disabled>&#8249;</button>
+                            <span class="eigen-counter" id="eigen-counter">1 / 2</span>
+                            <button class="eigen-btn" id="eigen-next" aria-label="Next image">&#8250;</button>
+                        </div>
+                    </div>
+                    <div class="eigen-text">
+                        <div class="project-num">02</div>
+                        <h3 class="project-title">Eigen</h3>
+                        <p class="project-desc">A semantic document search platform for educational content — upload PDFs, EPUBs, videos, and images, then search across them using AI-powered vector similarity. Features automated summaries and quiz generation.</p>
+                        <div class="project-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">TypeScript</span>
+                            <span class="tag">FastAPI</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">ChromaDB</span>
+                        </div>
+                        <a href="https://github.com/Parzival129/eigen" target="_blank" rel="noopener noreferrer" class="project-github-link">View on GitHub &rarr;</a>
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+                <button class="carousel-arrow carousel-next" id="proj-next" aria-label="Next project">&#8250;</button>
             </div>
+            <div class="carousel-dots" id="carousel-dots"></div>
         </div>
     </section>
 
@@ -181,6 +215,11 @@
     <footer>
         <span>Dinu Dassanayake &nbsp;·&nbsp; 2026</span>
     </footer>
+
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+    </div>
 
 <script src="script.js"></script>
 </body>

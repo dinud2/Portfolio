@@ -108,6 +108,144 @@ if (tssiPrev && tssiNext) {
     tssiNext.addEventListener('click', () => tssiShow(tssiIndex + 1));
 }
 
+// ── Eigen image cycler ───────────────────────────────
+const eigenSrcs    = ['media/eigen_1.png', 'media/eigen_2.png'];
+const eigenImg     = document.getElementById('eigen-img');
+const eigenPrev    = document.getElementById('eigen-prev');
+const eigenNext    = document.getElementById('eigen-next');
+const eigenCounter = document.getElementById('eigen-counter');
+let eigenIndex     = 0;
+
+function eigenShow(index) {
+    eigenIndex = index;
+    eigenImg.src = eigenSrcs[eigenIndex];
+    eigenCounter.textContent = `${eigenIndex + 1} / ${eigenSrcs.length}`;
+    eigenPrev.disabled = eigenIndex === 0;
+    eigenNext.disabled = eigenIndex === eigenSrcs.length - 1;
+}
+
+if (eigenPrev && eigenNext) {
+    eigenPrev.addEventListener('click', () => eigenShow(eigenIndex - 1));
+    eigenNext.addEventListener('click', () => eigenShow(eigenIndex + 1));
+}
+
+// ── Project carousel ──────────────────────────────
+const projTrack  = document.getElementById('projects-track');
+const projPrev   = document.getElementById('proj-prev');
+const projNext   = document.getElementById('proj-next');
+const projDots   = document.getElementById('carousel-dots');
+const projCards  = projTrack ? projTrack.querySelectorAll('.project-card') : [];
+let projIndex    = 0;
+
+function projShow(index) {
+    projIndex = index;
+    const card = projCards[projIndex];
+    const viewportWidth = projTrack.parentElement.offsetWidth;
+    const cardLeft = card.offsetLeft;
+    // Clamp so the card is never cut off: don't scroll further than needed
+    const maxScroll = projTrack.scrollWidth - viewportWidth;
+    const offset = Math.min(cardLeft, maxScroll);
+    projTrack.style.transform = `translateX(-${Math.max(0, offset)}px)`;
+    projPrev.disabled = projIndex === 0;
+    projNext.disabled = projIndex === projCards.length - 1;
+    projDots.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === projIndex);
+    });
+}
+
+if (projTrack && projCards.length) {
+    // Create dots
+    projCards.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Go to project ${i + 1}`);
+        dot.addEventListener('click', () => projShow(i));
+        projDots.appendChild(dot);
+    });
+
+    projPrev.addEventListener('click', () => projShow(projIndex - 1));
+    projNext.addEventListener('click', () => projShow(projIndex + 1));
+    projPrev.disabled = true;
+    projNext.disabled = projCards.length <= 1;
+}
+
+// ── Image lightbox ────────────────────────────────
+const lightbox    = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxClose = document.getElementById('lightbox-close');
+
+function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+if (lightbox) {
+    document.querySelectorAll('.tssi-images img, .eigen-images img').forEach(img => {
+        img.addEventListener('click', () => openLightbox(img.src, img.alt));
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    });
+}
+
+// ── Hamburger menu ────────────────────────────────
+const hamburger = document.getElementById('hamburger');
+const navLinksEl = document.getElementById('nav-links');
+
+if (hamburger && navLinksEl) {
+    hamburger.addEventListener('click', () => {
+        const isOpen = hamburger.classList.toggle('open');
+        navLinksEl.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    navLinksEl.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            navLinksEl.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        });
+    });
+}
+
+// ── Touch swipe for project carousel ──────────────
+if (projTrack && projCards.length > 1) {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    projTrack.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    projTrack.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0 && projIndex < projCards.length - 1) {
+                projShow(projIndex + 1);
+            } else if (diff < 0 && projIndex > 0) {
+                projShow(projIndex - 1);
+            }
+        }
+    }, { passive: true });
+}
+
 // ── Smooth scroll for nav links ────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
