@@ -207,9 +207,12 @@ const hamburger = document.getElementById('hamburger');
 const navLinksEl = document.getElementById('nav-links');
 
 if (hamburger && navLinksEl) {
+    const navEl = document.getElementById('nav');
+
     hamburger.addEventListener('click', () => {
         const isOpen = hamburger.classList.toggle('open');
         navLinksEl.classList.toggle('open');
+        navEl.classList.toggle('menu-open', isOpen);
         hamburger.setAttribute('aria-expanded', isOpen);
         document.body.style.overflow = isOpen ? 'hidden' : '';
     });
@@ -218,6 +221,7 @@ if (hamburger && navLinksEl) {
         a.addEventListener('click', () => {
             hamburger.classList.remove('open');
             navLinksEl.classList.remove('open');
+            navEl.classList.remove('menu-open');
             hamburger.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
         });
