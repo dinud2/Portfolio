@@ -1,0 +1,11 @@
+# Raw video footage — far too large for the repo.
+# Compressed demos belong in media/ as .mp4 (see media/pitch_demo.mp4).
+*.MOV
+*.mov
+
+# Local test artifacts
+_verify.html
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
