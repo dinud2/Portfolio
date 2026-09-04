@@ -270,8 +270,9 @@ body {
     min-height: 100vh;
     display: flex;
     align-items: center;
+    gap: 48px;
     padding: 120px 60px 80px;
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -378,18 +379,20 @@ body {
 
 .hero-image {
     position: relative;
-    flex-shrink: 0;
+    flex: 1 1 320px;
+    max-width: 620px;
     margin-left: auto;
     opacity: 0;
     animation: fade-up 0.8s cubic-bezier(0.22,1,0.36,1) 0.8s forwards;
 }
 
 .hero-image img {
-    width: 320px;
-    height: 320px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 5 / 3;
     object-fit: cover;
-    object-position: center top;
-    border-radius: 50%;
+    object-position: center;
+    border-radius: 18px;
     display: block;
     position: relative;
     z-index: 1;
@@ -406,7 +409,7 @@ body {
 .hero-image-ring {
     position: absolute;
     inset: -10px;
-    border-radius: 50%;
+    border-radius: 28px;
     border: 1px solid rgba(108,158,232,0.2);
     animation: ring-pulse 4s ease-in-out infinite;
     z-index: 0;
@@ -416,7 +419,7 @@ body {
     content: '';
     position: absolute;
     inset: -10px;
-    border-radius: 50%;
+    border-radius: 38px;
     border: 1px solid rgba(108,158,232,0.1);
     animation: ring-pulse 4s ease-in-out 1s infinite;
 }
@@ -424,6 +427,20 @@ body {
 @keyframes ring-pulse {
     0%, 100% { transform: scale(1);    opacity: 0.6; }
     50%       { transform: scale(1.04); opacity: 1;   }
+}
+
+@media (max-width: 1000px) {
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+    }
+
+    .hero-image {
+        flex: none;
+        width: min(100%, 520px);
+        margin: 0;
+    }
 }
 
 /* ── Marquee ───────────────────────────────────────── */
@@ -1264,6 +1281,7 @@ footer {
     }
 
     .hero {
+        gap: 0;
         padding: 100px 24px 60px;
         flex-direction: column;
         text-align: center;
@@ -1274,16 +1292,19 @@ footer {
     }
 
     .hero-image {
+        flex: none;
+        width: min(100%, 460px);
         margin: 32px auto 0;
     }
 
     .hero-image img {
-        width: 200px;
-        height: 200px;
+        width: 100%;
+        height: auto;
     }
 
     .hero-image-ring {
         inset: -8px;
+        border-radius: 26px;
     }
 
     .hero-cta {
@@ -1345,8 +1366,8 @@ footer {
     }
 
     .hero-image img {
-        width: 160px;
-        height: 160px;
+        width: 100%;
+        height: auto;
     }
 
     .project-row-head {

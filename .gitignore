@@ -9,3 +9,6 @@ _verify.html
 # OS / editor cruft
 .DS_Store
 Thumbs.db
+
+# Full-res source for the hero photo — too large for the repo.
+media/race_car_full.jpg
