@@ -1,73 +1,50 @@
-// ── Theme toggle ───────────────────────────────────
-const html        = document.documentElement;
-const toggleBtn   = document.getElementById('theme-toggle');
-const toggleIcon  = document.getElementById('toggle-icon');
-const toggleLabel = document.getElementById('toggle-label');
-
-function applyTheme(theme) {
-    html.dataset.theme = theme;
-    localStorage.setItem('theme', theme);
-    if (theme === 'light') {
-        toggleIcon.textContent  = '☾';
-        toggleLabel.textContent = 'Dark';
-    } else {
-        toggleIcon.textContent  = '☀';
-        toggleLabel.textContent = 'Light';
-    }
-}
-
-// Restore saved preference
-const savedTheme = localStorage.getItem('theme') || 'light';
-applyTheme(savedTheme);
-
-toggleBtn.addEventListener('click', () => {
-    applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
-});
-
-// ── Projects: data ─────────────────────────────────
-const projects = [
+// ── Frames ─────────────────────────────────────────
+// The three shipped frames, in candump order. Alt text and the TSSI /
+// Eigen descriptions are the ones the site already used.
+const frames = [
     {
-        title: 'Pitch-Axis Stabilization Loop',
-        category: 'Embedded',
-        desc: 'A single-axis flight controller running on an ESP32 — an MPU6050 IMU is fused with a '
-            + 'complementary filter to estimate pitch, and a PID loop drives two brushed motors '
-            + 'to hold the arm level against artificial disturbances. Gains, setpoint and motor '
-            + 'mix are tunable live over the serial console.',
-        tags: ['ESP32', 'C++'],
+        id: '0x1A0',
+        name: 'Flight Controller',
+        sig: 'ESP32 · MPU6050 · PID control',
+        state: 'DONE',
+        title: 'Flight controller test stand',
+        desc: 'One-degree-of-freedom pitch rig: a complementary filter on MPU6050 data feeds a PID control loop driving coreless motors via N-channel MOSFETs.',
+        link: { href: 'https://github.com/dinud2/Pitch-Axis-Stabilization-loop' },
         media: [
-            { src: 'media/pitch_1.jpg', alt: 'Pitch-axis rig: the arm level on its stand, ESP32 and MPU6050 wired to a laptop running the serial plot' },
-            { src: 'media/pitch_demo.mp4', alt: 'The arm returning to level after a disturbance',
+            { src: 'media/pitch_demo.mp4', w: 720, h: 1280, alt: 'The arm returning to level after a disturbance',
               poster: 'media/pitch_1.jpg' },
+            { src: 'media/pitch_1.jpg', w: 540, h: 960, alt: 'Pitch-axis rig: the arm level on its stand, ESP32 and MPU6050 wired to a laptop running the serial plot' },
         ],
-        link: { href: 'https://github.com/dinud2/Pitch-Axis-Stabilization-loop',
-                label: 'View on GitHub →' },
     },
     {
+        id: '0x0D5',
+        name: 'Tractive System Status Indicator',
+        sig: 'Altium',
+        state: 'DONE',
         title: 'Tractive System Status Indicator',
-        category: 'Hardware',
-        desc: "Designed and built my first PCB for the UofT Formula Racing 2026 electric vehicle — a hardware component that monitors and visually notifies the team of any hardware issues within the car's electrical & driverless system.",
-        tags: ['Altium', 'Soldering'],
-        media: [
-            { src: 'media/tssi_1.png', alt: 'TSSI PCB front' },
-            { src: 'media/tssi_2.png', alt: 'TSSI PCB back'  },
-        ],
+        desc: "Built for University of Toronto Formula Racing's 2026 electric car. It monitors the electrical and driverless systems and visually flags faults to the team.",
         link: null,
+        media: [
+            { src: 'media/web/tssi_1.webp', w: 1200, h: 1600, alt: 'Front of the tractive system status indicator printed circuit board' },
+            { src: 'media/web/tssi_2.webp', w: 1200, h: 1600, alt: 'Back of the tractive system status indicator printed circuit board' },
+        ],
     },
     {
+        id: '0x7E0',
+        name: 'Eigen',
+        sig: 'React · FastAPI · ChromaDB',
+        state: 'DONE',
         title: 'Eigen',
-        category: 'Software',
-        desc: 'A semantic document search platform for educational content — upload PDFs, EPUBs, videos, and images, then search across them using AI-powered vector similarity. Features automated summaries and quiz generation.',
-        tags: ['React', 'TypeScript', 'FastAPI', 'Python', 'ChromaDB'],
+        desc: 'Semantic search for study material. Upload PDFs, EPUBs, videos and images, then search across them by meaning. Generates summaries and quizzes automatically.',
+        link: { href: 'https://github.com/Parzival129/eigen' },
         media: [
-            { src: 'media/eigen_1.png', alt: 'Eigen semantic search results' },
-            { src: 'media/eigen_2.png', alt: 'Eigen document library' },
+            { src: 'media/web/eigen_1.webp', w: 1600, h: 884, alt: 'Eigen semantic search results' },
+            { src: 'media/web/eigen_2.webp', w: 1600, h: 877, alt: 'Eigen document library' },
         ],
-        link: { href: 'https://github.com/Parzival129/eigen', label: 'View on GitHub →' },
     },
 ];
 
-// ── Projects: render ───────────────────────────────
-const projectsList = document.getElementById('projects-list');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -76,29 +53,53 @@ function el(tag, className, text) {
     return node;
 }
 
+// ── Staggered entrances ────────────────────────────
+// each .fade-row waits a little longer than the one above it.
+// Replayed when a section opens, because a hidden panel never runs the animation.
+function replayRows(panel) {
+    if (!panel || reduceMotion.matches) return;
+    const rows = [...panel.querySelectorAll('.fade-row')];
+    rows.forEach((row, i) => {
+        row.style.setProperty('--i', String(i));
+        row.style.animation = 'none';
+    });
+    void panel.offsetWidth;
+    rows.forEach(row => row.style.removeProperty('animation'));
+}
+
+// ── Frames: media ──────────────────────────────────
 const isVideo = item => /\.(mp4|webm)$/i.test(item.src);
+
+const OPENABLE = '.gallery-frame img, .driver-photo img';
 
 function buildMediaEl(item) {
     if (!isVideo(item)) {
         const img = el('img');
-        img.src = item.src;
-        img.alt = item.alt;
+        img.src    = item.src;
+        img.alt    = item.alt;
+        img.width  = item.w;
+        img.height = item.h;
+        img.tabIndex = 0;   // stills open in the lightbox, so they need to be reachable by keyboard
+        img.setAttribute('role', 'button');
         return img;
     }
 
     const video = document.createElement('video');
     video.src = item.src;
+    video.width = item.w;
+    video.height = item.h;
     if (item.poster) video.poster = item.poster;
+    video.addEventListener('playing', () => { video.dataset.started = 'true'; }, { once: true });
     video.muted       = true;   // required for autoplay to be permitted
     video.loop        = true;
     video.playsInline = true;
     video.controls    = true;
-    video.autoplay    = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    video.autoplay    = !reduceMotion.matches;
     video.setAttribute('aria-label', item.alt);
     return video;
 }
 
-// Stop a video decoding once it is off-screen or replaced.
+// Stop a video decoding once it is replaced.
 function stopMedia(node) {
     if (node && node.tagName === 'VIDEO') {
         node.pause();
@@ -107,253 +108,225 @@ function stopMedia(node) {
     }
 }
 
-function buildGallery(project) {
-    const items = project.media || [];
+function buildGallery(frame) {
+    const items = frame.media || [];
     if (!items.length) return null;
 
+    // styles.css sizes the media from --ratio, so nothing is letterboxed
+    const frameEl = el('div', 'gallery-frame');
     const gallery = el('div', 'project-gallery');
-    gallery.dataset.imgIndex = '0';
-
-    gallery.appendChild(buildMediaEl(items[0]));
+    const place = item => {
+        frameEl.style.setProperty('--ratio', (item.w / item.h).toFixed(4));
+        gallery.classList.toggle('is-wide', item.w > item.h);
+        frameEl.replaceChildren(buildMediaEl(item));
+    };
+    place(items[0]);
+    gallery.appendChild(frameEl);
 
     if (items.length > 1) {
-        const prev = el('button', 'gallery-btn gallery-prev', '‹');
+        let index = 0;
+
+        const prev = el('button', 'gallery-btn', '‹');
         prev.type = 'button';
         prev.disabled = true;
         prev.setAttribute('aria-label', 'Previous item');
 
-        const next = el('button', 'gallery-btn gallery-next', '›');
+        const next = el('button', 'gallery-btn', '›');
         next.type = 'button';
         next.setAttribute('aria-label', 'Next item');
 
+        const counter = el('span', 'gallery-counter', `1 / ${items.length}`);
+
+        const show = step => {
+            index = Math.max(0, Math.min(items.length - 1, index + step));
+
+            stopMedia(frameEl.firstElementChild);
+            place(items[index]);
+
+            counter.textContent = `${index + 1} / ${items.length}`;
+            prev.disabled = index === 0;
+            next.disabled = index === items.length - 1;
+
+            // a button that just disabled itself would drop keyboard focus
+            if (step < 0 && prev.disabled) next.focus();
+            if (step > 0 && next.disabled) prev.focus();
+        };
+
+        prev.addEventListener('click', () => show(-1));
+        next.addEventListener('click', () => show(1));
+
         const controls = el('div', 'gallery-controls');
-        controls.append(prev, el('span', 'gallery-counter', `1 / ${items.length}`), next);
+        controls.append(prev, counter, next);
         gallery.appendChild(controls);
     }
 
     return gallery;
 }
 
-function buildPanelText(project) {
-    const text = el('div', 'project-panel-text');
-    text.appendChild(el('p', 'project-desc', project.desc));
+// ── Frames: rows + decoded panel ───────────────────
+const frameList = document.getElementById('frame-list');
+const decoded = document.getElementById('decoded');
 
-    const tags = el('div', 'project-tags');
-    project.tags.forEach(t => tags.appendChild(el('span', 'tag', t)));
-    text.appendChild(tags);
+let activeFrame = -1;
 
-    if (project.link) {
-        const link = el('a', 'project-github-link', project.link.label);
-        link.href   = project.link.href;
+function buildDecoded(frame) {
+    const heading = el('div', 'decoded-heading');
+    heading.append(
+        el('div', 'decoded-id', `${frame.id} · decoded`),
+        el('div', 'decoded-title', frame.title)
+    );
+
+    const desc = el('p', 'decoded-desc');
+    desc.textContent = frame.desc;
+    if (frame.link) {
+        desc.append(' ');
+        const link = el('a', null, 'GitHub →');
+        link.href = frame.link.href;
         link.target = '_blank';
-        link.rel    = 'noopener noreferrer';
-        text.appendChild(link);
+        link.rel = 'noopener noreferrer';
+        desc.appendChild(link);
     }
 
-    return text;
-}
-
-function buildRow(project, i) {
-    const panelId = `proj-panel-${i}`;
-
-    const row = el('article', 'project-row fade-in');
-    row.dataset.index = String(i);
-    row.style.setProperty('--delay', `${(i * 0.06).toFixed(2)}s`);
-
-    // a project may legitimately have no media yet; render the row without a
-    // thumbnail rather than throwing and taking the rest of the script with it
-    const items = project.media || [];
-    const still = items.find(m => !isVideo(m)) || items[0];
-    let thumbWrap = null;
-
-    if (still) {
-        const thumb = el('img', 'project-thumb');
-        thumb.src     = still.poster || still.src;
-        thumb.alt     = '';
-        thumb.loading = 'lazy';
-
-        thumbWrap = el('div', 'project-thumb-wrap');
-        thumbWrap.appendChild(thumb);
+    const gallery = buildGallery(frame);
+    const body = el('div', gallery ? 'decoded-body has-media' : 'decoded-body no-media');
+    if (gallery) {
+        const copy = el('div', 'decoded-copy');
+        copy.append(heading, desc);
+        body.append(gallery, copy);
     } else {
-        row.classList.add('no-media');
+        body.append(heading, desc);
     }
-
-    const toggle = el('span', 'project-toggle');
-    toggle.setAttribute('aria-hidden', 'true');
-
-    const head = el('button', 'project-row-head');
-    head.type = 'button';
-    head.setAttribute('aria-expanded', 'false');
-    head.setAttribute('aria-controls', panelId);
-    const meta = el('div', 'project-row-meta');
-    meta.append(
-        el('span', 'project-num', String(i + 1).padStart(2, '0')),
-        el('span', 'project-category', project.category)
-    );
-
-    head.append(
-        ...(thumbWrap ? [thumbWrap] : []),
-        meta,
-        toggle,
-        el('span', 'project-row-title', project.title),
-        el('span', 'project-row-blurb', project.desc),
-        el('span', 'project-row-tags', project.tags.join(' · '))
-    );
-
-    const gallery = buildGallery(project);
-    const body = el('div', 'project-panel-body');
-    body.append(buildPanelText(project), ...(gallery ? [gallery] : []));
-
-    const inner = el('div', 'project-panel-inner');
-    inner.appendChild(body);
-
-    const panel = el('div', 'project-panel');
-    panel.id = panelId;
-    panel.inert = true;
-    panel.appendChild(inner);
-
-    row.append(head, panel);
-    return row;
+    return body;
 }
 
-if (projectsList) {
-    projects.forEach((project, i) => projectsList.appendChild(buildRow(project, i)));
+function showFrame(i) {
+    // clicking the open frame again would rebuild its video and undo a pause
+    if (i === activeFrame) return;
+    activeFrame = i;
+
+    frameList.querySelectorAll('.frame-row').forEach((btn, n) => {
+        btn.setAttribute('aria-pressed', String(n === i));
+    });
+
+    decoded.querySelectorAll('video').forEach(stopMedia);
+    decoded.replaceChildren(buildDecoded(frames[i]));
 }
 
-// ── Projects: expand / collapse ────────────────────
-function closeRow(row) {
-    row.classList.remove('open');
-    row.querySelector('.project-row-head').setAttribute('aria-expanded', 'false');
-    row.querySelector('.project-panel').inert = true;
-    // a collapsed panel is 0-height but a video in it would keep decoding
-    row.querySelectorAll('video').forEach(v => v.pause());
+if (frameList && decoded) {
+    frames.forEach((frame, i) => {
+        const btn = el('button', 'frame-row fade-row');
+        btn.type = 'button';
+        btn.style.setProperty('--i', String(i));
+        btn.setAttribute('aria-pressed', 'false');
+
+        const state = el('span', 'frame-state', frame.state);
+        state.dataset.state = frame.state;
+
+        btn.append(
+            el('span', 'frame-id', frame.id),
+            el('span', 'frame-name', frame.name),
+            el('span', 'frame-sig', frame.sig),
+            state
+        );
+        btn.addEventListener('click', () => showFrame(i));
+        frameList.appendChild(btn);
+    });
+
+    showFrame(0);
 }
 
-if (projectsList) {
-    projectsList.addEventListener('click', e => {
-        const head = e.target.closest('.project-row-head');
-        if (!head) return;
+// ── Tabs ───────────────────────────────────────────
+const tabs = [...document.querySelectorAll('.tab')];
 
-        const row      = head.closest('.project-row');
-        const willOpen = !row.classList.contains('open');
+const panelFor = tab => document.getElementById(tab.getAttribute('aria-controls'));
 
-        projectsList.querySelectorAll('.project-row.open').forEach(closeRow);
+function activateTab(tab, { focus = false, updateHash = true } = {}) {
+    tabs.forEach(t => {
+        const selected = t === tab;
+        t.setAttribute('aria-selected', String(selected));
+        t.tabIndex = selected ? 0 : -1;
+        panelFor(t).hidden = !selected;
+    });
 
-        if (willOpen) {
-            row.classList.add('open');
-            head.setAttribute('aria-expanded', 'true');
-            row.querySelector('.project-panel').inert = false;
+    // a hidden panel would otherwise keep its video decoding
+    // ...but one the viewer paused themselves should stay paused on return
+    document.querySelectorAll('.panel video').forEach(video => {
+        if (video.closest('.panel').hidden) {
+            video.dataset.resume = String(!video.paused || !video.dataset.started);
+            video.pause();
+        } else if (video.dataset.resume === 'true' && !reduceMotion.matches) {
+            video.play().catch(() => {});
         }
     });
 
-    // ── Projects: image gallery ────────────────────
-    projectsList.addEventListener('click', e => {
-        const btn = e.target.closest('.gallery-prev, .gallery-next');
-        if (!btn) return;
-
-        const gallery = btn.closest('.project-gallery');
-        const items = projects[Number(gallery.closest('.project-row').dataset.index)].media;
-        const step  = btn.classList.contains('gallery-next') ? 1 : -1;
-        const index = Math.max(0, Math.min(items.length - 1, Number(gallery.dataset.imgIndex) + step));
-
-        gallery.dataset.imgIndex = String(index);
-
-        const current = gallery.querySelector('img, video');
-        stopMedia(current);
-        current.replaceWith(buildMediaEl(items[index]));
-
-        gallery.querySelector('.gallery-counter').textContent = `${index + 1} / ${items.length}`;
-        gallery.querySelector('.gallery-prev').disabled = index === 0;
-        gallery.querySelector('.gallery-next').disabled = index === items.length - 1;
-    });
+    replayRows(panelFor(tab));
+    if (focus) tab.focus();
+    if (updateHash) history.replaceState(null, '', `#${tab.dataset.tab}`);
 }
 
-// ── Custom cursor ──────────────────────────────────
-const dot = document.getElementById('cursor-dot');
+tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => activateTab(tab));
 
-if (dot) {
-    document.addEventListener('mousemove', e => {
-        dot.style.left = e.clientX + 'px';
-        dot.style.top  = e.clientY + 'px';
-    });
+    tab.addEventListener('keydown', e => {
+        const target = {
+            ArrowRight: tabs[(i + 1) % tabs.length],
+            ArrowLeft:  tabs[(i - 1 + tabs.length) % tabs.length],
+            Home:       tabs[0],
+            End:        tabs[tabs.length - 1],
+        }[e.key];
 
-    document.addEventListener('mouseleave', () => {
-        dot.style.opacity = '0';
+        if (target) {
+            e.preventDefault();
+            activateTab(target, { focus: true });
+        }
     });
+});
 
-    document.addEventListener('mouseenter', () => {
-        dot.style.opacity = '1';
-    });
+// Open the tab named in the URL so each section stays linkable.
+// Skills used to be its own tab and now sits inside About.
+const hashAliases = { '#skills': '#about' };
 
-    const hoverTargets = 'a, button, .project-row-head, .contact-link, .btn-primary, .btn-secondary, .theme-toggle';
-    document.querySelectorAll(hoverTargets).forEach(el => {
-        el.addEventListener('mouseenter', () => dot.classList.add('expanded'));
-        el.addEventListener('mouseleave', () => dot.classList.remove('expanded'));
-    });
+function tabFromHash() {
+    const hash = hashAliases[location.hash] || location.hash;
+    return tabs.find(t => `#${t.dataset.tab}` === hash);
 }
 
-// ── Nav: shrink on scroll + active section ─────────
-const nav      = document.getElementById('nav');
-const navLinks = document.querySelectorAll('.nav-links a');
-const sections = document.querySelectorAll('section[id]');
+activateTab(tabFromHash() || tabs[0], { updateHash: false });
 
-window.addEventListener('scroll', () => {
-    // Shrink nav
-    if (window.scrollY > 60) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
-
-    // Active link
-    let current = '';
-    sections.forEach(sec => {
-        if (window.scrollY >= sec.offsetTop - 120) {
-            current = sec.id;
-        }
-    });
-    navLinks.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-}, { passive: true });
-
-// ── Intersection observer: fade-in ────────────────
-const fadeEls = document.querySelectorAll('.fade-in');
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.12 });
-
-fadeEls.forEach(el => observer.observe(el));
+window.addEventListener('hashchange', () => {
+    const tab = tabFromHash();
+    if (tab) activateTab(tab, { updateHash: false });
+});
 
 // ── Image lightbox ────────────────────────────────
-const lightbox    = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
+const lightbox      = document.getElementById('lightbox');
+const lightboxImg   = document.getElementById('lightbox-img');
 const lightboxClose = document.getElementById('lightbox-close');
 
+let lightboxOpener = null;
+
 function openLightbox(src, alt) {
+    lightboxOpener = document.activeElement;
     lightboxImg.src = src;
     lightboxImg.alt = alt || '';
     lightbox.classList.add('open');
     lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    lightboxClose.focus();
 }
 
 function closeLightbox() {
     lightbox.classList.remove('open');
     lightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    if (lightboxOpener && lightboxOpener.isConnected) lightboxOpener.focus();
+    lightboxOpener = null;
 }
 
 if (lightbox) {
     document.addEventListener('click', e => {
-        const img = e.target.closest('.project-gallery img');
-        if (img) openLightbox(img.src, img.alt);
+        const img = e.target.closest(OPENABLE);
+        if (img) openLightbox(img.currentSrc || img.src, img.alt);
     });
 
     lightboxClose.addEventListener('click', closeLightbox);
@@ -361,45 +334,17 @@ if (lightbox) {
         if (e.target === lightbox) closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
-    });
-}
+        if (lightbox.classList.contains('open')) {
+            if (e.key === 'Escape') closeLightbox();
+            // the close button is the only control, so focus stays on it
+            if (e.key === 'Tab') { e.preventDefault(); lightboxClose.focus(); }
+            return;
+        }
 
-// ── Hamburger menu ────────────────────────────────
-const hamburger = document.getElementById('hamburger');
-const navLinksEl = document.getElementById('nav-links');
-
-if (hamburger && navLinksEl) {
-    const navEl = document.getElementById('nav');
-
-    hamburger.addEventListener('click', () => {
-        const isOpen = hamburger.classList.toggle('open');
-        navLinksEl.classList.toggle('open');
-        navEl.classList.toggle('menu-open', isOpen);
-        hamburger.setAttribute('aria-expanded', isOpen);
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-    });
-
-    navLinksEl.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-            hamburger.classList.remove('open');
-            navLinksEl.classList.remove('open');
-            navEl.classList.remove('menu-open');
-            hamburger.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-        });
-    });
-}
-
-
-// ── Smooth scroll for nav links ────────────────────
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) {
+        const img = e.target.closest && e.target.closest(OPENABLE);
+        if (img && (e.key === 'Enter' || e.key === ' ')) {
             e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth' });
+            openLightbox(img.currentSrc || img.src, img.alt);
         }
     });
-});
-
+}
