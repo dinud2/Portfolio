@@ -54,7 +54,7 @@
                             <a class="project-link" href="https://github.com/dinud2/Pitch-Axis-Stabilization-loop" target="_blank" rel="noopener noreferrer">View on GitHub</a>
                         </div>
                         <div class="project-media">
-                            <video src="media/pitch_demo.mp4" poster="media/web/pitch_1.webp" width="720" height="1280" muted loop playsinline autoplay controls aria-label="The arm returning to level after a disturbance"></video>
+                            <video src="media/pitch_demo.mp4" poster="media/web/pitch_1.webp" width="720" height="1280" muted loop playsinline autoplay tabindex="0" role="button" aria-label="The arm returning to level after a disturbance"></video>
                             <img src="media/web/pitch_1.webp" width="540" height="960" loading="lazy" tabindex="0" role="button" alt="Pitch-axis rig: the arm level on its stand, ESP32 and MPU6050 wired to a laptop running the serial plot" />
                         </div>
                     </article>
@@ -100,7 +100,10 @@
 
     <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
         <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
+        <button class="lightbox-nav is-prev" id="lightbox-prev" type="button" aria-label="Previous image">&#8249;</button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+        <video class="lightbox-img" id="lightbox-video" muted loop playsinline controls hidden></video>
+        <button class="lightbox-nav is-next" id="lightbox-next" type="button" aria-label="Next image">&#8250;</button>
     </div>
 
 <script src="script.js"></script>

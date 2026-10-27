@@ -32,13 +32,39 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
 // ── Lightbox ──
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
+const lightboxVideo = document.getElementById('lightbox-video');
 const closeBtn = document.getElementById('lightbox-close');
+const prevBtn = document.getElementById('lightbox-prev');
+const nextBtn = document.getElementById('lightbox-next');
+let group = [];
+let current = 0;
 let opener = null;
 
-const openLightbox = img => {
-    opener = img;
-    lightboxImg.src = img.currentSrc || img.src;
-    lightboxImg.alt = img.alt;
+const showItem = i => {
+    current = (i + group.length) % group.length;
+    const item = group[current];
+    const isVideo = item.tagName === 'VIDEO';
+    lightboxImg.hidden = isVideo;
+    lightboxVideo.hidden = !isVideo;
+    if (isVideo) {
+        lightboxImg.src = '';
+        lightboxVideo.src = item.currentSrc || item.src;
+        lightboxVideo.setAttribute('aria-label', item.getAttribute('aria-label'));
+        lightboxVideo.play().catch(() => {});
+    } else {
+        lightboxVideo.pause();
+        lightboxVideo.removeAttribute('src');
+        lightboxImg.src = item.currentSrc || item.src;
+        lightboxImg.alt = item.alt;
+    }
+};
+
+const openLightbox = item => {
+    opener = item;
+    // Arrows only cycle through media from the same project
+    group = [...item.closest('.project-media').querySelectorAll('[role="button"]')];
+    prevBtn.hidden = nextBtn.hidden = group.length < 2;
+    showItem(group.indexOf(item));
     lightbox.hidden = false;
     closeBtn.focus();
 };
@@ -46,15 +72,27 @@ const openLightbox = img => {
 const closeLightbox = () => {
     lightbox.hidden = true;
     lightboxImg.src = '';
+    lightboxVideo.pause();
+    lightboxVideo.removeAttribute('src');
     if (opener) opener.focus();
 };
 
-document.querySelectorAll('img[role="button"]').forEach(img => {
-    img.addEventListener('click', () => openLightbox(img));
-    img.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(img); }
+document.querySelectorAll('.project-media [role="button"]').forEach(item => {
+    item.addEventListener('click', () => openLightbox(item));
+    item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(item); }
     });
 });
 
-lightbox.addEventListener('click', e => { if (e.target !== lightboxImg) closeLightbox(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lightbox.hidden) closeLightbox(); });
+prevBtn.addEventListener('click', () => showItem(current - 1));
+nextBtn.addEventListener('click', () => showItem(current + 1));
+
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+closeBtn.addEventListener('click', closeLightbox);
+document.addEventListener('keydown', e => {
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (group.length < 2) return;
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); showItem(current - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); showItem(current + 1); }
+});
