@@ -43,10 +43,19 @@
 
         <section class="section section-rule" id="projects" aria-labelledby="projects-title">
             <div class="container">
-                <div class="section-heading reveal"><h2 id="projects-title">Projects</h2></div>
+                <div class="section-heading reveal">
+                    <h2 id="projects-title">Projects</h2>
+                    <div class="project-filters" role="group" aria-label="Filter projects by category">
+                        <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">All</button>
+                        <button class="filter-btn" type="button" data-filter="firmware" aria-pressed="false">Firmware</button>
+                        <button class="filter-btn" type="button" data-filter="software" aria-pressed="false">Software</button>
+                        <button class="filter-btn" type="button" data-filter="pcb" aria-pressed="false">PCB</button>
+                        <button class="filter-btn" type="button" data-filter="fpga" aria-pressed="false">FPGA</button>
+                    </div>
+                </div>
                 <div class="row-list">
 
-                    <article class="project-row reveal">
+                    <article class="project-row reveal" data-category="firmware">
                         <div class="project-details">
                             <h3 class="project-title"><a href="projects/flight-controller.html">Flight controller test stand</a></h3>
                             <p class="project-meta">ESP32 · MPU6050 · PID control</p>
@@ -62,7 +71,7 @@
                         </div>
                     </article>
 
-                    <article class="project-row reveal">
+                    <article class="project-row reveal" data-category="pcb">
                         <div class="project-details">
                             <h3 class="project-title"><a href="projects/tssi.html">Tractive System Status Indicator</a></h3>
                             <p class="project-meta">Altium · UofT Formula Racing</p>
@@ -77,7 +86,7 @@
                         </div>
                     </article>
 
-                    <article class="project-row reveal">
+                    <article class="project-row reveal" data-category="software">
                         <div class="project-details">
                             <h3 class="project-title"><a href="projects/eigen.html">Eigen</a></h3>
                             <p class="project-meta">React · FastAPI · ChromaDB</p>
