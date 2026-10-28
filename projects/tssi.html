@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="A status indicator board for UofT Formula Racing's 2026 electric car." />
+    <title>Tractive System Status Indicator — Dinu Dassanayake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+<body id="top">
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="../index.html">Dinu Dassanayake</a>
+            <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
+                <a href="../index.html#projects">projects</a>
+                <a href="https://github.com/dinud2" target="_blank" rel="noopener noreferrer">github</a>
+                <a href="https://www.linkedin.com/in/dinu-dassanayake/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                <a href="../media/Dinu_Dassanayake_CV.pdf" target="_blank" rel="noopener noreferrer">resume</a>
+                <a href="mailto:dinudaham02@gmail.com">email</a>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links">
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <article class="container post">
+            <a class="post-back" href="../index.html#projects">&larr; All projects</a>
+
+            <header class="post-header">
+                <h1>Tractive System Status Indicator</h1>
+                <p class="project-meta">Altium · UofT Formula Racing</p>
+                <p class="post-lede">Built for University of Toronto Formula Racing's 2026 electric car. It monitors the electrical and driverless systems and visually flags faults to the team.</p>
+            </header>
+
+            <div class="project-media post-gallery">
+                <img src="../media/web/tssi_1.webp" width="1200" height="1600" loading="lazy" tabindex="0" role="button" alt="Front of the tractive system status indicator printed circuit board" />
+                <img src="../media/web/tssi_2.webp" width="1200" height="1600" loading="lazy" tabindex="0" role="button" alt="Back of the tractive system status indicator printed circuit board" />
+            </div>
+
+            <div class="post-body">
+                <h2>What it is:</h2>
+                <p>This was the first PCB I ever designed! I designed it for the University of Toronto Formula Racing team. It uses LEDs to signal whether the car is safe to touch, energized, or experiencing an isolation fault. It is required for competition and is a very important board. Looking back, I am incredibly happy to have been able to design it in my first year of university.</p>
+
+                <h2>How it works:</h2>
+                <p>The TSSI works by checking the Grounded Low Voltage (GLV) system, the Battery Management System (BMS) and the Insulation Monitoring Device (IMD) to decide which lighting sequence to show.</p>
+
+                <h2>What I learned:</h2>
+                <ul>
+                    <li>I learned how to use Altium, including importing component models.</li>
+                    <li>I learned a lot about diodes, since they weren't covered in my first-year classes.</li>
+                </ul>
+
+                <h2>What's next:</h2>
+                <p>Hopefully the team keeps using it for many more years :)</p>
+            </div>
+        </article>
+
+        <nav class="container post-pager" aria-label="More projects">
+            <a class="is-prev" href="flight-controller.html"><span>&larr; Previous</span><strong>Flight controller test stand</strong></a>
+            <a class="is-next" href="eigen.html"><span>Next &rarr;</span><strong>Eigen</strong></a>
+        </nav>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>TORONTO, ON</span>
+            <a href="#top">Back to top</a>
+            <span>2026</span>
+        </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
+        <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
+        <button class="lightbox-nav is-prev" id="lightbox-prev" type="button" aria-label="Previous image">&#8249;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+        <video class="lightbox-img" id="lightbox-video" muted loop playsinline controls hidden></video>
+        <button class="lightbox-nav is-next" id="lightbox-next" type="button" aria-label="Next image">&#8250;</button>
+    </div>
+
+<script src="../script.js"></script>
+</body>
+</html>

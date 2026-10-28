@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="A one-degree-of-freedom pitch rig for tuning a flight controller." />
+    <title>Flight controller test stand — Dinu Dassanayake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+<body id="top">
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="../index.html">Dinu Dassanayake</a>
+            <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
+                <a href="../index.html#projects">projects</a>
+                <a href="https://github.com/dinud2" target="_blank" rel="noopener noreferrer">github</a>
+                <a href="https://www.linkedin.com/in/dinu-dassanayake/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                <a href="../media/Dinu_Dassanayake_CV.pdf" target="_blank" rel="noopener noreferrer">resume</a>
+                <a href="mailto:dinudaham02@gmail.com">email</a>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links">
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <article class="container post">
+            <a class="post-back" href="../index.html#projects">&larr; All projects</a>
+
+            <header class="post-header">
+                <h1>Flight Controller Test Stand</h1>
+                <p class="project-meta">ESP32 · MPU6050 · PID control</p>
+                <p class="post-lede">A one-degree-of-freedom pitch rig: a complementary filter on MPU6050 data feeds a PID control loop driving coreless motors via N-channel MOSFETs.</p>
+                <div class="project-links">
+                    <a class="project-link" href="https://github.com/dinud2/Pitch-Axis-Stabilization-loop" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                </div>
+            </header>
+
+            <div class="project-media post-gallery">
+                <video src="../media/pitch_demo.mp4" poster="../media/web/pitch_1.webp" width="720" height="1280" muted loop playsinline autoplay tabindex="0" role="button" aria-label="The arm returning to level after a disturbance"></video>
+                <img src="../media/web/pitch_1.webp" width="540" height="960" loading="lazy" tabindex="0" role="button" alt="Pitch-axis rig: the arm level on its stand, ESP32 and MPU6050 wired to a laptop running the serial plot" />
+            </div>
+
+            <div class="post-body">
+                <h2>What it is:</h2>
+                <p>This is a project I made since I decided to learn more about flight controllers, especially the algorithms they use to maintain and change their positions smoothly. I was interested in how they use orientation and position data to stay balanced even in windy environments. Since building an entire flight controller was out of my scope due to time constraints, I decided to build a one-degree-of-freedom test rig using my Bambu Lab printer to validate and apply my newly gained knowledge.</p>
+                <p>A flight controller uses a PID control algorithm to compare its desired orientation against its actual orientation to calculate an error. PID breaks the error into 3 pieces:</p>
+                <ol>
+                    <li><strong>Proportional (P):</strong> Reacts to the present error</li>
+                    <li><strong>Integral (I):</strong> Accounts for accumulated past error</li>
+                    <li><strong>Derivative (D):</strong> Responds to how fast the error is changing</li>
+                </ol>
+
+                <h2>How it works:</h2>
+                <p>The stand is a 3D-printed beam on a pivot with a small motor at each end. An ESP32 runs a control loop about 500 times a second, and each pass goes through these four steps:</p>
+                <ol>
+                    <li><strong>Sense:</strong> An MPU6050 reports acceleration and rotation rate over I²C. The accelerometer gives the beam's absolute angle, and the gyroscope gives how fast it is rotating.</li>
+                    <li><strong>Estimate:</strong> The accelerometer is noisy, and the gyroscope drifts over time. A complementary filter blends them, using the gyro for quick changes and the accelerometer to cancel drift.</li>
+                    <li><strong>Control:</strong> The PID loop compares that pitch to the target (level) and calculates a correction. The integral term and the output are both capped so the correction never asks the motors for more than they can give.</li>
+                    <li><strong>Actuate:</strong> Both motors spin at a base throttle. The correction is added to one motor and subtracted from the other, so one end of the beam lifts while the other drops.</li>
+                </ol>
+                <p>To make tuning easier, I can change the PID gains, the target angle and the base throttle over the serial console while the rig is running, without reflashing. The ESP32 also streams the pitch and motor outputs to the serial plotter, so I can see how each change affects the response.</p>
+
+                <h2>What I learned:</h2>
+                <ul>
+                    <li>This project taught me about PID control and especially how to tune various parameters to get the most accurate result when working in a noisy environment (my finger disrupting the beam's balance).</li>
+                </ul>
+            </div>
+        </article>
+
+        <nav class="container post-pager" aria-label="More projects">
+            <a class="is-next" href="tssi.html"><span>Next &rarr;</span><strong>Tractive System Status Indicator</strong></a>
+        </nav>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>TORONTO, ON</span>
+            <a href="#top">Back to top</a>
+            <span>2026</span>
+        </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
+        <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
+        <button class="lightbox-nav is-prev" id="lightbox-prev" type="button" aria-label="Previous image">&#8249;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+        <video class="lightbox-img" id="lightbox-video" muted loop playsinline controls hidden></video>
+        <button class="lightbox-nav is-next" id="lightbox-next" type="button" aria-label="Next image">&#8250;</button>
+    </div>
+
+<script src="../script.js"></script>
+</body>
+</html>
