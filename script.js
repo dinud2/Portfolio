@@ -24,6 +24,34 @@ const setNav = open => {
 toggle.addEventListener('click', () => setNav(!links.classList.contains('is-open')));
 links.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
 
+// ── Project filters ──
+const filterBtns = document.querySelectorAll('.filter-btn');
+const projectRows = document.querySelectorAll('.project-row[data-category]');
+const categoriesOf = row => row.dataset.category.split(' ');
+
+// Hide categories that have no projects yet; they appear once a row is tagged
+filterBtns.forEach(btn => {
+    const f = btn.dataset.filter;
+    if (f !== 'all') btn.hidden = ![...projectRows].some(row => categoriesOf(row).includes(f));
+});
+
+filterBtns.forEach(btn => btn.addEventListener('click', () => {
+    const f = btn.dataset.filter;
+    if (btn.getAttribute('aria-pressed') === 'true') return;
+    filterBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    let shown = 0;
+    projectRows.forEach(row => {
+        row.hidden = f !== 'all' && !categoriesOf(row).includes(f);
+        row.classList.remove('is-filtered-in');
+        if (row.hidden) return;
+        row.classList.add('is-visible');
+        // Restart the fade, staggering each visible row slightly
+        void row.offsetWidth;
+        row.style.animationDelay = `${shown++ * 60}ms`;
+        row.classList.add('is-filtered-in');
+    });
+}));
+
 // ── Respect reduced motion for the demo video ──
 if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('video[autoplay]').forEach(v => { v.autoplay = false; v.pause(); });

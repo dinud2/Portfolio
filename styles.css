@@ -115,7 +115,39 @@ a:focus-visible, button:focus-visible, img:focus-visible {
 }
 
 /* ── Projects ── */
+#projects .section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px 40px;
+}
+
+.project-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.filter-btn {
+    padding: 8px 15px;
+    border: 1.5px solid #3b7bb84d;
+    border-radius: 8px;
+    background: #ffffff80;
+    color: var(--quiet-ink);
+    font: 400 12px/1 var(--sans);
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background .2s;
+}
+
+.filter-btn:hover { color: var(--accent); border-color: var(--accent); }
+.filter-btn[aria-pressed="true"] { background: #3b7bb81f; border-color: var(--accent); color: var(--accent); }
+.filter-btn[hidden] { display: none; }
+
 .row-list { border-top: 1px solid var(--line); }
+.project-row[hidden] { display: none; }
+.project-row.is-filtered-in { animation: filter-in .4s ease-out both; }
+
+@keyframes filter-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+}
 
 .project-row {
     display: grid;
@@ -367,4 +399,5 @@ video.lightbox-img { width: auto; height: 90vh; aspect-ratio: 9 / 16; background
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; transition: none; }
+    .project-row.is-filtered-in { animation: none; }
 }
