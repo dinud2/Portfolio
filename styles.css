@@ -142,6 +142,12 @@ a:focus-visible, button:focus-visible, img:focus-visible {
 
 .row-list { border-top: 1px solid var(--line); }
 .project-row[hidden] { display: none; }
+.project-row.is-filtered-in { animation: filter-in .4s ease-out both; }
+
+@keyframes filter-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+}
 
 .project-row {
     display: grid;
@@ -393,4 +399,5 @@ video.lightbox-img { width: auto; height: 90vh; aspect-ratio: 9 / 16; background
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; transition: none; }
+    .project-row.is-filtered-in { animation: none; }
 }

@@ -37,10 +37,18 @@ filterBtns.forEach(btn => {
 
 filterBtns.forEach(btn => btn.addEventListener('click', () => {
     const f = btn.dataset.filter;
+    if (btn.getAttribute('aria-pressed') === 'true') return;
     filterBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    let shown = 0;
     projectRows.forEach(row => {
         row.hidden = f !== 'all' && !categoriesOf(row).includes(f);
-        if (!row.hidden) row.classList.add('is-visible');
+        row.classList.remove('is-filtered-in');
+        if (row.hidden) return;
+        row.classList.add('is-visible');
+        // Restart the fade, staggering each visible row slightly
+        void row.offsetWidth;
+        row.style.animationDelay = `${shown++ * 60}ms`;
+        row.classList.add('is-filtered-in');
     });
 }));
 
