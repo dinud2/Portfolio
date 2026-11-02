@@ -198,6 +198,7 @@ a:focus-visible, button:focus-visible, img:focus-visible {
 }
 
 .project-media [role="button"] { cursor: zoom-in; }
+.project-media > :only-child { grid-column: 1 / -1; }
 .project-media:not(.is-wide) img, .project-media video { aspect-ratio: 3 / 4; object-fit: cover; }
 .project-media.is-wide img { aspect-ratio: 4 / 3; object-fit: cover; object-position: left top; }
 

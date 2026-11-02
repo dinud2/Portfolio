@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Ray-Ban Meta glasses app that turns everyday moments into exaggerated LinkedIn thought-leadership posts, hands-free." />
+    <title>LarpedIn — Dinu Dassanayake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+<body id="top">
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="../index.html">Dinu Dassanayake</a>
+            <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
+                <a href="../index.html#projects">projects</a>
+                <a href="https://github.com/dinud2" target="_blank" rel="noopener noreferrer">github</a>
+                <a href="https://www.linkedin.com/in/dinu-dassanayake/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                <a href="../media/Dinu_Dassanayake_CV.pdf" target="_blank" rel="noopener noreferrer">resume</a>
+                <a href="mailto:dinudaham02@gmail.com">email</a>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links">
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <article class="container post">
+            <a class="post-back" href="../index.html#projects">&larr; All projects</a>
+
+            <header class="post-header">
+                <h1>LarpedIn</h1>
+                <p class="project-meta">Swift · Meta Wearables SDK</p>
+                <p class="post-lede">For anyone who wants to post on LinkedIn consistently and get the most out of their Meta glasses.</p>
+                <div class="project-links">
+                    <a class="project-link" href="https://github.com/dinud2/LarpedIn" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                </div>
+            </header>
+
+            <div class="project-media post-gallery is-wide">
+                <img src="../media/web/larpedin_1.webp" width="1600" height="1200" loading="lazy" tabindex="0" role="button" alt="Whiteboard sketch of the LarpedIn architecture: glasses to app via SDK, app to worker, worker to AI and ffmpeg, then post text to LinkedIn" />
+            </div>
+
+            <div class="post-body">
+                <h2>What it is:</h2>
+                <p>LarpedIn was built at LarpHacks 2026 to make "larping" on LinkedIn effortless. It uses Meta glasses to capture ordinary moments and turns them into exaggerated, lesson-filled LinkedIn posts.</p>
+
+                <h2>How it works:</h2>
+                <ol>
+                    <li><strong>Stream:</strong> The iOS app connects to Ray-Ban Meta glasses through Meta's Wearables SDK and streams their camera and microphone. It keeps the last 30 seconds of HEVC video and audio in a rolling buffer in memory.</li>
+                    <li><strong>Clip:</strong> Holding the capture button on the glasses (or tapping Clip in the app) cuts the last 5 to 30 seconds into an mp4 and uploads it to the backend.</li>
+                    <li><strong>Process:</strong> The backend is an API running in Docker. It uses ffmpeg to pull 32 frames and a mono audio track from the clip.</li>
+                    <li><strong>Write:</strong> An audio model transcribes the audio. A second model gets the frames and transcript, writes a dramatically self-important LinkedIn post about the moment, and picks the best frame to go with it.</li>
+                    <li><strong>Post:</strong> The backend uploads the frame through LinkedIn's Images API and publishes the post. A Live Activity on the phone's lock screen tracks each step and ends with a "View post" button.</li>
+                </ol>
+
+                <h2>What I learned:</h2>
+                <ul>
+                    <li>I learned how to work with live video on iOS: decoding HEVC with VideoToolbox, and keeping a rolling buffer so a clip can be cut from the past instead of starting a recording when the button is pressed.</li>
+                    <li>I learned how to build a multimodal AI pipeline, splitting transcription and writing across two models and giving the writer both the frames and the transcript as context.</li>
+                    <li>I learned that model output needs a fallback. The model sometimes skipped picking a frame, so the backend now uses the middle frame when that happens.</li>
+                    <li>I learned how LinkedIn's API works: OAuth tokens, uploading images separately before the post, and the fact that it can only create public posts, with no drafts.</li>
+                </ul>
+
+                <h2>What's next:</h2>
+                <ul>
+                    <li>Add authentication to the clip endpoint so only my app can post.</li>
+                    <li>Let users review and edit a post on their phone before it goes live.</li>
+                    <li>Ship it as a production build once Meta's button and audio streaming APIs are out of beta.</li>
+                </ul>
+            </div>
+        </article>
+
+        <nav class="container post-pager" aria-label="More projects">
+            <a class="is-prev" href="eigen.html"><span>&larr; Previous</span><strong>Eigen</strong></a>
+        </nav>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>TORONTO, ON</span>
+            <a href="#top">Back to top</a>
+            <span>2026</span>
+        </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
+        <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
+        <button class="lightbox-nav is-prev" id="lightbox-prev" type="button" aria-label="Previous image">&#8249;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+        <video class="lightbox-img" id="lightbox-video" muted loop playsinline controls hidden></video>
+        <button class="lightbox-nav is-next" id="lightbox-next" type="button" aria-label="Next image">&#8250;</button>
+    </div>
+
+<script src="../script.js"></script>
+</body>
+</html>
