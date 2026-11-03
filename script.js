@@ -57,6 +57,64 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('video[autoplay]').forEach(v => { v.autoplay = false; v.pause(); });
 }
 
+// ── Project page carousels ──
+const carousels = new Map();
+document.querySelectorAll('.post-gallery').forEach(gallery => {
+    const slides = [...gallery.querySelectorAll('[role="button"]')];
+    const thumbs = [];
+    gallery.classList.add('is-carousel');
+
+    const show = i => {
+        const index = (i + slides.length) % slides.length;
+        slides.forEach((slide, n) => {
+            const on = n === index;
+            slide.classList.toggle('is-active', on);
+            if (slide.tagName !== 'VIDEO') return;
+            if (on && slide.autoplay) slide.play().catch(() => {});
+            else slide.pause();
+        });
+        thumbs.forEach((thumb, n) => thumb.setAttribute('aria-current', String(n === index)));
+        gallery.dataset.index = index;
+    };
+    carousels.set(gallery, { slides, show });
+
+    if (slides.length > 1) {
+        const step = d => show(Number(gallery.dataset.index) + d);
+        [['is-prev', 'Previous image', '\u2039', -1], ['is-next', 'Next image', '\u203A', 1]].forEach(([cls, label, glyph, d]) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `carousel-nav ${cls}`;
+            btn.setAttribute('aria-label', label);
+            btn.textContent = glyph;
+            btn.addEventListener('click', () => step(d));
+            gallery.append(btn);
+        });
+
+        const strip = document.createElement('div');
+        strip.className = 'carousel-thumbs';
+        slides.forEach((slide, n) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'carousel-thumb';
+            btn.setAttribute('aria-label', `Show item ${n + 1} of ${slides.length}`);
+            const img = document.createElement('img');
+            img.src = slide.tagName === 'VIDEO' ? slide.getAttribute('poster') : slide.getAttribute('src');
+            img.alt = '';
+            btn.append(img);
+            btn.addEventListener('click', () => show(n));
+            strip.append(btn);
+            thumbs.push(btn);
+        });
+        gallery.after(strip);
+
+        [gallery, strip].forEach(el => el.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+        }));
+    }
+    show(0);
+});
+
 // ── Lightbox ──
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
@@ -102,7 +160,11 @@ const closeLightbox = () => {
     lightboxImg.src = '';
     lightboxVideo.pause();
     lightboxVideo.removeAttribute('src');
-    if (opener) opener.focus();
+    // Leave the carousel on whatever was last viewed in the lightbox
+    const viewed = group[current];
+    const carousel = viewed && carousels.get(viewed.closest('.post-gallery'));
+    if (carousel) { carousel.show(carousel.slides.indexOf(viewed)); viewed.focus(); }
+    else if (opener) opener.focus();
 };
 
 document.querySelectorAll('.project-media [role="button"]').forEach(item => {
