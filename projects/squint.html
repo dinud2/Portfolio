@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Squint is a Google Home-style device that helps elderly couples keep track of their prescriptions and watch for signs of cognitive decline." />
+    <title>Squint — Dinu Dassanayake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+<body id="top">
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="../index.html">Dinu Dassanayake</a>
+            <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
+                <a href="../index.html#projects">projects</a>
+                <a href="https://github.com/dinud2" target="_blank" rel="noopener noreferrer">github</a>
+                <a href="https://www.linkedin.com/in/dinu-dassanayake/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                <a href="../media/Dinu_Dassanayake_CV.pdf" target="_blank" rel="noopener noreferrer">resume</a>
+                <a href="mailto:dinudaham02@gmail.com">email</a>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links">
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <article class="container post">
+            <a class="post-back" href="../index.html#projects">&larr; All projects</a>
+
+            <header class="post-header">
+                <h1>Squint</h1>
+                <p class="project-meta">QNX (RTOS) · OpenCV · Raspberry Pi 5</p>
+                <p class="post-lede">Squint is a Google Home-style device that helps elderly couples keep track of their prescriptions and watch for signs of cognitive decline.</p>
+                <div class="project-links">
+                    <a class="project-link" href="https://devpost.com/software/squint-etuyvg" target="_blank" rel="noopener noreferrer">View on Devpost</a>
+                </div>
+            </header>
+
+            <div class="project-media post-gallery">
+                <div class="carousel-embed" data-thumb="https://img.youtube.com/vi/T-LUZIXTAD8/hqdefault.jpg">
+                    <iframe src="https://www.youtube-nocookie.com/embed/T-LUZIXTAD8?enablejsapi=1" title="Squint demo video" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <img class="is-portrait" src="../media/web/squint_1.webp" width="1200" height="1600" loading="lazy" tabindex="0" role="button" alt="Laptop at the hackathon running a pose-tracking camera check, with tracked points drawn over Dinu's face, shoulders and hands" />
+                <img src="../media/web/squint_2.webp" width="1600" height="1200" loading="lazy" tabindex="0" role="button" alt="Squint demo table: a light blue 3D-printed case with a screen showing a winking face and a Logitech webcam on top, next to a laptop" />
+            </div>
+
+            <div class="post-body">
+                <h2>What it is:</h2>
+                <p>Squint is a device designed for elderly couples that sits next to their pill bottles.</p>
+                <ul>
+                    <li><strong>Recognizes you:</strong> When you walk up, it greets you by name through a Google Home and tells you what you take today.</li>
+                    <li><strong>Checks the bottle:</strong> When you pick one up, it reads the label and checks that it's yours, that it's due, and that you haven't already taken it today.</li>
+                    <li><strong>Logs the dose:</strong> When your hand goes to your mouth, it records the dose. If it's unsure, it asks you to confirm on screen.</li>
+                    <li><strong>Stops double doses:</strong> If you reach for a high-risk medication you already took, its eyes turn red and it says, "Stop, Dinu. You already took your Tylenol at 8:02." It also warns you if you grab your partner's bottle.</li>
+                </ul>
+
+                <h2>How it works:</h2>
+                <p><strong>Hardware:</strong> Raspberry Pi 5 running QNX 8 (RTOS) and a Logitech webcam.</p>
+                <ol>
+                    <li><strong>Camera:</strong> QNX didn't have the camera headers we needed, so I wrote our own camera streamer in C using QNX's native camera API. It runs at the highest real-time priority, so the camera keeps streaming no matter how busy the vision models are.</li>
+                    <li><strong>Vision:</strong> A Python pipeline uses the one camera feed to answer three questions. Who is it? YuNet finds faces and SFace matches them to each person. Which bottle? A MobileNetV3 network that my teammates and I trained on over 800 photos of medication bottles identifies it. Did they take it? A MediaPipe palm detector watches the area around the mouth.</li>
+                    <li><strong>Running the models:</strong> We trained the bottle model locally on my laptop. Every model is then exported to ONNX and run through OpenCV on the Pi.</li>
+                    <li><strong>Face and voice:</strong> The Tab5 runs our own Arduino firmware, and its eye colour shows status: white means all good, amber means double-check, red means stop. Speech is generated offline with Piper and played on the Google Home.</li>
+                    <li><strong>App:</strong> A SwiftUI iOS app with a widget, Siri shortcuts and notifications.</li>
+                </ol>
+
+                <h2>What I learned:</h2>
+                <ul>
+                    <li><strong>Machine learning models:</strong> This project was my first time training and running models. It was a valuable experience that taught me how neural networks work and how computers can learn from different types of data.</li>
+                    <li><strong>Raspberry Pi 5:</strong> This project taught me how to work with the Raspberry Pi 5 hardware at a low level.</li>
+                </ul>
+
+                <h2>What's next:</h2>
+                <ul>
+                    <li>Design a custom PCB to make Squint smaller.</li>
+                    <li>Improve the medication tracking model to support pills in blister packs.</li>
+                </ul>
+            </div>
+        </article>
+
+        <nav class="container post-pager" aria-label="More projects">
+            <a class="is-prev" href="larpedin.html"><span>&larr; Previous</span><strong>LarpedIn</strong></a>
+        </nav>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>TORONTO, ON</span>
+            <a href="#top">Back to top</a>
+            <span>2026</span>
+        </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
+        <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
+        <button class="lightbox-nav is-prev" id="lightbox-prev" type="button" aria-label="Previous image">&#8249;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+        <video class="lightbox-img" id="lightbox-video" muted loop playsinline controls hidden></video>
+        <button class="lightbox-nav is-next" id="lightbox-next" type="button" aria-label="Next image">&#8250;</button>
+    </div>
+
+<script src="../script.js"></script>
+</body>
+</html>

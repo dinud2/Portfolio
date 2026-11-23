@@ -60,7 +60,7 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
 // ── Project page carousels ──
 const carousels = new Map();
 document.querySelectorAll('.post-gallery').forEach(gallery => {
-    const slides = [...gallery.querySelectorAll('[role="button"]')];
+    const slides = [...gallery.querySelectorAll(':scope > [role="button"], :scope > .carousel-embed')];
     const thumbs = [];
     gallery.classList.add('is-carousel');
 
@@ -69,6 +69,9 @@ document.querySelectorAll('.post-gallery').forEach(gallery => {
         slides.forEach((slide, n) => {
             const on = n === index;
             slide.classList.toggle('is-active', on);
+            // Pause an embedded YouTube video when moving off its slide
+            const frame = slide.querySelector('iframe');
+            if (frame && !on) frame.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
             if (slide.tagName !== 'VIDEO') return;
             if (on && slide.autoplay) slide.play().catch(() => {});
             else slide.pause();
@@ -97,10 +100,22 @@ document.querySelectorAll('.post-gallery').forEach(gallery => {
             btn.type = 'button';
             btn.className = 'carousel-thumb';
             btn.setAttribute('aria-label', `Show item ${n + 1} of ${slides.length}`);
-            const img = document.createElement('img');
-            img.src = slide.tagName === 'VIDEO' ? slide.getAttribute('poster') : slide.getAttribute('src');
-            img.alt = '';
-            btn.append(img);
+            if (slide.classList.contains('carousel-embed')) {
+                // Video thumbnail, falling back to a play symbol if it can't load
+                const fallback = document.createElement('span');
+                fallback.className = 'thumb-video';
+                fallback.textContent = '\u25B6';
+                const img = document.createElement('img');
+                img.src = slide.dataset.thumb || '';
+                img.alt = '';
+                img.addEventListener('error', () => img.replaceWith(fallback));
+                btn.append(img);
+            } else {
+                const img = document.createElement('img');
+                img.src = slide.tagName === 'VIDEO' ? slide.getAttribute('poster') : slide.getAttribute('src');
+                img.alt = '';
+                btn.append(img);
+            }
             btn.addEventListener('click', () => show(n));
             strip.append(btn);
             thumbs.push(btn);
