@@ -231,6 +231,7 @@ a:focus-visible, button:focus-visible, img:focus-visible {
 
 .post-gallery { margin: 44px 0 0; }
 .project-media.is-wide:has(.is-portrait) { grid-template-columns: 2fr 1fr; }
+.project-media.is-wide:has(> .is-portrait:first-child) { grid-template-columns: 1fr 2fr; }
 .project-media.is-wide img.is-portrait { aspect-ratio: 2 / 3; object-position: center; }
 
 /* Carousel: one item at a time, uncropped, with thumbnails underneath */
@@ -242,7 +243,8 @@ a:focus-visible, button:focus-visible, img:focus-visible {
     height: min(70vh, 560px);
 }
 
-.post-gallery.is-carousel > [role="button"] {
+.post-gallery.is-carousel > [role="button"],
+.post-gallery.is-carousel > .carousel-embed {
     display: none;
     flex: none;
     width: auto;
@@ -254,6 +256,9 @@ a:focus-visible, button:focus-visible, img:focus-visible {
 }
 
 .post-gallery.is-carousel > video[role="button"] { height: 100%; aspect-ratio: 9 / 16; background: #000; }
+.post-gallery.is-carousel > .carousel-embed { width: 100%; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: #000; }
+.carousel-embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+.carousel-thumb .thumb-video { display: grid; place-items: center; width: 114px; height: 64px; border-radius: 3px; background: #000; color: #fff; font-size: 20px; }
 .post-gallery.is-carousel > .is-active { display: block; animation: carousel-in .35s ease; }
 
 @keyframes carousel-in { from { opacity: 0; } }
@@ -466,5 +471,8 @@ video.lightbox-img { width: auto; height: 90vh; aspect-ratio: 9 / 16; background
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; transition: none; }
     .project-row.is-filtered-in { animation: none; }
-    .post-gallery.is-carousel > .is-active { animation: none; }
+    .post-gallery.is-carousel > .carousel-embed { width: 100%; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: #000; }
+.carousel-embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+.carousel-thumb .thumb-video { display: grid; place-items: center; width: 114px; height: 64px; border-radius: 3px; background: #000; color: #fff; font-size: 20px; }
+.post-gallery.is-carousel > .is-active { animation: none; }
 }
