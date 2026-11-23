@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
-    <meta name="description" content="[One-sentence description of Squint]" />
+    <meta name="description" content="Squint is a Google Home-style device that helps elderly couples keep track of their prescriptions and watch for signs of cognitive decline." />
     <title>Squint — Dinu Dassanayake</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,8 +35,8 @@
 
             <header class="post-header">
                 <h1>Squint</h1>
-                <p class="project-meta">[Tool · Tool · Tool]</p>
-                <p class="post-lede">[Two-sentence summary: what it is and why it exists.]</p>
+                <p class="project-meta">QNX (RTOS) · OpenCV · Raspberry Pi 5</p>
+                <p class="post-lede">Squint is a Google Home-style device that helps elderly couples keep track of their prescriptions and watch for signs of cognitive decline.</p>
                 <div class="project-links">
                     <a class="project-link" href="https://devpost.com/software/squint-etuyvg" target="_blank" rel="noopener noreferrer">View on Devpost</a>
                 </div>
@@ -52,21 +52,34 @@
 
             <div class="post-body">
                 <h2>What it is:</h2>
-                <p>[What it is]</p>
+                <p>Squint is a device designed for elderly couples that sits next to their pill bottles.</p>
+                <ul>
+                    <li><strong>Recognizes you:</strong> When you walk up, it greets you by name through a Google Home and tells you what you take today.</li>
+                    <li><strong>Checks the bottle:</strong> When you pick one up, it reads the label and checks that it's yours, that it's due, and that you haven't already taken it today.</li>
+                    <li><strong>Logs the dose:</strong> When your hand goes to your mouth, it records the dose. If it's unsure, it asks you to confirm on screen.</li>
+                    <li><strong>Stops double doses:</strong> If you reach for a high-risk medication you already took, its eyes turn red and it says, "Stop, Dinu. You already took your Tylenol at 8:02." It also warns you if you grab your partner's bottle.</li>
+                </ul>
 
                 <h2>How it works:</h2>
+                <p><strong>Hardware:</strong> Raspberry Pi 5 running QNX 8 (RTOS) and a Logitech webcam.</p>
                 <ol>
-                    <li>[Step]</li>
+                    <li><strong>Camera:</strong> QNX didn't have the camera headers we needed, so I wrote our own camera streamer in C using QNX's native camera API. It runs at the highest real-time priority, so the camera keeps streaming no matter how busy the vision models are.</li>
+                    <li><strong>Vision:</strong> A Python pipeline uses the one camera feed to answer three questions. Who is it? YuNet finds faces and SFace matches them to each person. Which bottle? A MobileNetV3 network that my teammates and I trained on over 800 photos of medication bottles identifies it. Did they take it? A MediaPipe palm detector watches the area around the mouth.</li>
+                    <li><strong>Running the models:</strong> We trained the bottle model locally on my laptop. Every model is then exported to ONNX and run through OpenCV on the Pi.</li>
+                    <li><strong>Face and voice:</strong> The Tab5 runs our own Arduino firmware, and its eye colour shows status: white means all good, amber means double-check, red means stop. Speech is generated offline with Piper and played on the Google Home.</li>
+                    <li><strong>App:</strong> A SwiftUI iOS app with a widget, Siri shortcuts and notifications.</li>
                 </ol>
 
                 <h2>What I learned:</h2>
                 <ul>
-                    <li>[Lesson]</li>
+                    <li><strong>Machine learning models:</strong> This project was my first time training and running models. It was a valuable experience that taught me how neural networks work and how computers can learn from different types of data.</li>
+                    <li><strong>Raspberry Pi 5:</strong> This project taught me how to work with the Raspberry Pi 5 hardware at a low level.</li>
                 </ul>
 
                 <h2>What's next:</h2>
                 <ul>
-                    <li>[Next step]</li>
+                    <li>Design a custom PCB to make Squint smaller.</li>
+                    <li>Improve the medication tracking model to support pills in blister packs.</li>
                 </ul>
             </div>
         </article>
