@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .d { stroke: #1f2d3d; }
+    .dot { fill: #2f7fd6; }
+    @media (prefers-color-scheme: dark) {
+      .d { stroke: #eaf2f8; }
+      .dot { fill: #5aa6f0; }
+    }
+  </style>
+  <path class="d" d="M10 10h16l12 12v20l-12 12h-16z" fill="none" stroke-width="12" stroke-linejoin="miter"/>
+  <rect class="dot" x="48" y="48" width="12" height="12"/>
+</svg>
